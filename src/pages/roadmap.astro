@@ -403,6 +403,24 @@ const jsonLd = {
     opacity: 0.8;
   }
 
+  /* Light mode overrides */
+  :global([data-theme="light"]) .stage-indicator {
+    background: color-mix(in srgb, var(--stage-color) 8%, white);
+    border-color: color-mix(in srgb, var(--stage-color) 25%, transparent);
+  }
+
+  :global([data-theme="light"]) .mini-card:hover {
+    background: color-mix(in srgb, var(--card-accent) 6%, white);
+  }
+
+  :global([data-theme="light"]) .dot-number {
+    background: var(--bg);
+  }
+
+  :global([data-theme="light"]) .timeline-dot:hover .dot-number {
+    color: white;
+  }
+
   /* Mobile */
   @media (max-width: 768px) {
     .timeline-nav {

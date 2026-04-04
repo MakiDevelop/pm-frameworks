@@ -18,6 +18,10 @@ const { showBack = false, subtitle } = Astro.props;
     {subtitle ? <span class="header-subtitle">{subtitle}</span> : null}
     <nav class="header-nav">
       <a href="/roadmap/" class="nav-link">路線圖</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="切換明暗模式">
+        <span class="theme-icon-light">&#9788;</span>
+        <span class="theme-icon-dark">&#9790;</span>
+      </button>
     </nav>
   </div>
 </header>
@@ -63,6 +67,9 @@ const { showBack = false, subtitle } = Astro.props;
 
   .header-nav {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
   }
 
   .nav-link {
@@ -78,4 +85,41 @@ const { showBack = false, subtitle } = Astro.props;
     border-color: var(--accent);
     color: var(--accent);
   }
+
+  .theme-toggle {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    padding: 0;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .theme-icon-light { display: none; }
+  .theme-icon-dark { display: inline; }
+
+  :global([data-theme="light"]) .theme-icon-light { display: inline; }
+  :global([data-theme="light"]) .theme-icon-dark { display: none; }
 </style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  toggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>

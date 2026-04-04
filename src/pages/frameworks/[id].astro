@@ -368,6 +368,24 @@ const jsonLd = [
     margin: var(--space-md) 0;
   }
 
+  :global([data-theme="light"]) .detail-content :global(.do-box) {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  :global([data-theme="light"]) .detail-content :global(.dont-box) {
+    background: #fef2f2;
+    border-color: #fecaca;
+  }
+
+  :global([data-theme="light"]) .similar-item:hover {
+    background: #fffbeb;
+  }
+
+  :global([data-theme="light"]) .similar-vs {
+    background: #fef3c7;
+  }
+
   /* Similar Frameworks (Comparison) */
   .similar-section {
     max-width: var(--max-content);

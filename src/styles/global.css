@@ -43,6 +43,37 @@
   --radius-sm: 8px;
 }
 
+/* Light mode */
+[data-theme="light"] {
+  --bg: #f8f8fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f0f4;
+  --bg-modal: #ffffff;
+  --text: #1a1a2e;
+  --text-muted: #555566;
+  --text-dim: #888899;
+  --accent: #3b6fd4;
+  --accent-dim: #2a5bb8;
+  --border: #d8d8e0;
+  --border-light: #c0c0cc;
+  --tag-bg: #eeeef4;
+  --tag-text: #555566;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --maki-bg: #f3f0ff;
+  --maki-border: #7c6bc4;
+  --maki-accent: #6c5ce7;
+}
+
+[data-theme="light"] .tag-使用者洞察 { background: #dbeafe; color: #1d4ed8; }
+[data-theme="light"] .tag-問題定義 { background: #fee2e2; color: #dc2626; }
+[data-theme="light"] .tag-創意發想 { background: #dcfce7; color: #16a34a; }
+[data-theme="light"] .tag-驗證測試 { background: #fef3c7; color: #d97706; }
+[data-theme="light"] .tag-執行落地 { background: #e0e7ff; color: #4f46e5; }
+[data-theme="light"] .tag-成長策略 { background: #fae8ff; color: #c026d3; }
+[data-theme="light"] .tag-系統思維 { background: #ccfbf1; color: #0d9488; }
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
