@@ -22,9 +22,11 @@ const frameworks = defineCollection({
     stage: z.string(),
     duration: z.string(),
     year: z.number(),
+    mnemonic: z.string().optional(),
     similarTo: z.array(z.object({
       slug: z.string(),
       difference: z.string(),
+      tagline: z.string().optional(),
     })).optional(),
   }),
 });

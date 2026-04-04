@@ -9,12 +9,16 @@ source: '數學逆證法 · Charlie Munger 年度股東信 · Shane Parrish《Fa
 stage: '策略規劃 · 問題拆解 · 決策前'
 duration: '個人思考 15-30 分鐘 · 團隊工作坊 1-2 小時'
 year: 1830
+mnemonic: '思維工具：反著問「怎麼做才會失敗」然後避開所有地雷'
 similarTo:
   - slug: pre-mortem
+    tagline: '思維方式 vs 會議格式'
     difference: 'Pre-Mortem 是專案風險管理的會議格式，Inversion 是可用於任何情境的通用思維工具。'
   - slug: first-principles
+    tagline: '反向排除 vs 正向建構'
     difference: '第一性原理從基本事實「往上建構」解法，逆向思維從「假設失敗」往回拆解。一個正向建構，一個反向排除。'
   - slug: five-whys
+    tagline: '事前找地雷 vs 事後找根因'
     difference: '5 Why 追問「為什麼發生」（事後找根因），逆向思維問「怎麼讓它發生」（事前找地雷）。'
 ---
 

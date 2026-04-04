@@ -9,10 +9,13 @@ source: 'Harvard Business Review (2007) · Daniel Kahneman《快思慢想》'
 stage: '專案啟動前 · 重大決策前 · Sprint 開始前'
 duration: '30-60 分鐘（團隊工作坊）'
 year: 2007
+mnemonic: '會議格式：專案啟動前的「假設失敗」風險演習'
 similarTo:
   - slug: inversion
+    tagline: '會議格式 vs 思維方式'
     difference: 'Inversion 是通用思維工具（任何問題都能反轉），Pre-Mortem 是專案風險管理的會議格式。'
   - slug: hypothesis-board
+    tagline: '啟動前找風險 vs 進行中追假設'
     difference: '假設驗證板追蹤「假設是否成立」，Pre-Mortem 在開始前就找出「可能導致失敗的原因」。'
 ---
 

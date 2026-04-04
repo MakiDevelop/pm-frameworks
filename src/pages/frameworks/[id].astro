@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
 const { framework, allFrameworks } = Astro.props;
 const { Content } = await render(framework);
-const { number, title, titleEn, category, oneLiner, author, source, stage, duration, year, similarTo } = framework.data;
+const { number, title, titleEn, category, oneLiner, author, source, stage, duration, year, mnemonic, similarTo } = framework.data;
 const num = String(number).padStart(2, '0');
 const skillPath = `/skills/${framework.id}.md`;
 
@@ -29,7 +29,7 @@ const related = allFrameworks
 const similarFrameworks = (similarTo || []).map((s) => {
   const match = allFrameworks.find((f) => f.id === s.slug);
   return match ? { ...s, title: match.data.title, titleEn: match.data.titleEn } : null;
-}).filter(Boolean) as { slug: string; difference: string; title: string; titleEn: string }[];
+}).filter(Boolean) as { slug: string; difference: string; tagline?: string; title: string; titleEn: string }[];
 
 // Category slug mapping
 const categorySlugMap: Record<string, string> = {
@@ -111,6 +111,13 @@ const jsonLd = [
         </h1>
         <p class="detail-oneliner">{oneLiner}</p>
 
+        {mnemonic && (
+          <div class="mnemonic-badge" aria-label="記憶口訣">
+            <span class="mnemonic-label">記憶錨點</span>
+            <span class="mnemonic-text">{mnemonic}</span>
+          </div>
+        )}
+
         <!-- Metadata as dl for AIO -->
         <div class="detail-meta">
           <dl class="meta-grid">
@@ -154,6 +161,7 @@ const jsonLd = [
                   <span class="similar-name">{s.title}</span>
                   <span class="similar-en">{s.titleEn}</span>
                 </div>
+                {s.tagline && <p class="similar-tagline">{s.tagline}</p>}
                 <p class="similar-diff">{s.difference}</p>
               </a>
             ))}
@@ -243,8 +251,52 @@ const jsonLd = [
     color: var(--text-muted);
     font-size: 1.05rem;
     max-width: 600px;
-    margin: 0 auto var(--space-xl);
+    margin: 0 auto var(--space-lg);
     line-height: 1.7;
+  }
+
+  .mnemonic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 0.6em 1.2em;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--radius-sm);
+    margin: 0 auto var(--space-xl);
+    max-width: 100%;
+  }
+
+  .mnemonic-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    white-space: nowrap;
+    border-right: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    padding-right: var(--space-sm);
+  }
+
+  .mnemonic-text {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 500;
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .mnemonic-badge {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
+    }
+    .mnemonic-label {
+      border-right: none;
+      padding-right: 0;
+    }
   }
 
   .detail-meta {
@@ -458,6 +510,15 @@ const jsonLd = [
   .similar-en {
     font-size: 0.75rem;
     color: var(--text-dim);
+  }
+
+  .similar-tagline {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--amber);
+    margin: 0 0 var(--space-xs);
+    font-family: var(--font-display);
+    font-style: italic;
   }
 
   .similar-diff {
