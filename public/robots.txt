@@ -20,4 +20,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://pm.maki.tw/sitemap-index.xml
+Sitemap: https://pm.chiba.tw/sitemap-index.xml
