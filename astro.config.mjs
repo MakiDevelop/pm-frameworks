@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://pm.maki.tw',
+  site: 'https://pm.chiba.tw',
   output: 'static',
   integrations: [sitemap()],
 });
