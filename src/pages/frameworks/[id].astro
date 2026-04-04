@@ -1,0 +1,232 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const frameworks = await getCollection('frameworks');
+  return frameworks.map((f) => ({
+    params: { id: f.id },
+    props: { framework: f },
+  }));
+}
+
+const { framework } = Astro.props;
+const { Content } = await render(framework);
+const { number, title, titleEn, category, oneLiner, author, source, stage, duration, year } = framework.data;
+const num = String(number).padStart(2, '0');
+const skillPath = `/skills/${framework.id}.md`;
+---
+
+<BaseLayout title={`${title} · PMFrame.works`} description={oneLiner}>
+  <Header showBack={true} subtitle={`${category} · #${num}`} />
+
+  <article class="framework-detail">
+    <div class="container">
+      <section class="detail-hero">
+        <span class="detail-eyebrow">Framework Deep Dive</span>
+        <h1 class="detail-title">
+          {title} <em>{titleEn}</em>
+        </h1>
+        <p class="detail-oneliner">{oneLiner}</p>
+
+        <div class="detail-meta">
+          <div class="meta-item">
+            <span class="meta-label">提出者</span>
+            <span class="meta-value">{author}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">來源</span>
+            <span class="meta-value">{source}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">適合階段</span>
+            <span class="meta-value">{stage}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">使用時長</span>
+            <span class="meta-value">{duration}</span>
+          </div>
+          <a href={skillPath} class="skill-download" download>
+            &#x2B07; 下載 Skill
+          </a>
+        </div>
+      </section>
+
+      <section class="detail-content">
+        <Content />
+      </section>
+    </div>
+  </article>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .framework-detail {
+    padding: var(--space-2xl) 0;
+  }
+
+  .detail-hero {
+    max-width: var(--max-content);
+    margin: 0 auto var(--space-3xl);
+    text-align: center;
+  }
+
+  .detail-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .detail-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin: var(--space-md) 0;
+  }
+
+  .detail-title em {
+    font-weight: 600;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.6em;
+    display: block;
+    margin-top: var(--space-xs);
+  }
+
+  .detail-oneliner {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto var(--space-xl);
+    line-height: 1.7;
+  }
+
+  .detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .meta-item {
+    text-align: center;
+  }
+
+  .meta-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2em;
+  }
+
+  .meta-value {
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+
+  /* Markdown content styling */
+  .detail-content {
+    max-width: var(--max-content);
+    margin: 0 auto;
+  }
+
+  .detail-content :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: var(--space-3xl) 0 var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-content :global(h3) {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: var(--space-xl) 0 var(--space-md);
+  }
+
+  .detail-content :global(p) {
+    margin-bottom: var(--space-md);
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .detail-content :global(ul),
+  .detail-content :global(ol) {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-lg);
+    color: var(--text-muted);
+  }
+
+  .detail-content :global(li) {
+    margin-bottom: var(--space-sm);
+    line-height: 1.7;
+  }
+
+  .detail-content :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .detail-content :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: var(--space-lg);
+    margin: var(--space-xl) 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Maki's Take — rendered from markdown via custom div */
+  .detail-content :global(.maki-take) {
+    background: var(--maki-bg);
+    border: 1px solid var(--maki-border);
+    border-radius: var(--radius);
+    padding: var(--space-xl);
+    margin: var(--space-xl) 0;
+  }
+
+  .detail-content :global(.maki-take-label) {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--maki-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Do / Don't boxes */
+  .detail-content :global(.do-box) {
+    background: #0d1f0d;
+    border: 1px solid #1a3a1a;
+    border-radius: var(--radius);
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+  }
+
+  .detail-content :global(.dont-box) {
+    background: #1f0d0d;
+    border: 1px solid #3a1a1a;
+    border-radius: var(--radius);
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+  }
+
+  @media (max-width: 640px) {
+    .detail-meta {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>

@@ -1,0 +1,264 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FrameworkCard from '../components/FrameworkCard.astro';
+import { getCollection } from 'astro:content';
+
+const frameworks = (await getCollection('frameworks')).sort(
+  (a, b) => a.data.number - b.data.number
+);
+
+const categories = [
+  '使用者洞察',
+  '問題定義',
+  '創意發想',
+  '驗證測試',
+  '執行落地',
+  '成長策略',
+  '系統思維',
+];
+
+const countByCategory = categories.map((cat) => ({
+  name: cat,
+  count: frameworks.filter((f) => f.data.category === cat).length,
+}));
+---
+
+<BaseLayout title="產品設計框架 · PMFrame.works 繁中版">
+  <Header />
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">繁體中文版 · 精選收錄</p>
+      <h1 class="hero-title">
+        產品設計<em>框架</em>
+      </h1>
+      <p class="hero-desc">
+        從使用者洞察到系統思維，精選最實用的產品框架工具集。<br />
+        每篇附上台灣實戰觀點與可下載的 AI Skill。
+      </p>
+    </div>
+  </section>
+
+  <section class="filters">
+    <div class="container">
+      <div class="search-box">
+        <input
+          type="text"
+          id="search"
+          placeholder="搜尋框架名稱或關鍵字…"
+          autocomplete="off"
+        />
+      </div>
+      <div class="category-tabs" role="tablist">
+        <button class="tab active" data-category="all">
+          全部 ({frameworks.length})
+        </button>
+        {countByCategory.map(({ name, count }) => (
+          <button class="tab" data-category={name}>
+            {name} ({count})
+          </button>
+        ))}
+      </div>
+      <div class="results-count">
+        <span id="results-count">{frameworks.length}</span> / {frameworks.length}
+      </div>
+    </div>
+  </section>
+
+  <section class="grid-section">
+    <div class="container">
+      <div class="card-grid" id="card-grid">
+        {frameworks.map((f) => (
+          <div class="card-wrapper" data-category={f.data.category} data-title={f.data.title} data-title-en={f.data.titleEn}>
+            <FrameworkCard
+              number={f.data.number}
+              title={f.data.title}
+              titleEn={f.data.titleEn}
+              category={f.data.category}
+              oneLiner={f.data.oneLiner}
+              slug={f.id}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const searchInput = document.getElementById('search') as HTMLInputElement;
+  const tabs = document.querySelectorAll('.tab');
+  const cards = document.querySelectorAll('.card-wrapper');
+  const countEl = document.getElementById('results-count');
+
+  let activeCategory = 'all';
+
+  function filterCards() {
+    const query = searchInput.value.toLowerCase();
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const el = card as HTMLElement;
+      const cat = el.dataset.category || '';
+      const title = (el.dataset.title || '').toLowerCase();
+      const titleEn = (el.dataset.titleEn || '').toLowerCase();
+
+      const matchCategory = activeCategory === 'all' || cat === activeCategory;
+      const matchSearch = !query || title.includes(query) || titleEn.includes(query);
+
+      if (matchCategory && matchSearch) {
+        el.style.display = '';
+        visible++;
+      } else {
+        el.style.display = 'none';
+      }
+    });
+
+    if (countEl) countEl.textContent = String(visible);
+  }
+
+  searchInput?.addEventListener('input', filterCards);
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCategory = (tab as HTMLElement).dataset.category || 'all';
+      filterCards();
+    });
+  });
+</script>
+
+<style>
+  .hero {
+    padding: var(--space-3xl) 0 var(--space-2xl);
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-title em {
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .filters {
+    padding: var(--space-lg) 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-box {
+    margin-bottom: var(--space-md);
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 0.75em 1em;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-dim);
+  }
+
+  .category-tabs {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
+    scrollbar-width: none;
+  }
+
+  .category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 0.4em 1em;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+  }
+
+  .tab:hover {
+    border-color: var(--border-light);
+    color: var(--text);
+  }
+
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .results-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: var(--space-sm);
+  }
+
+  .grid-section {
+    padding: var(--space-2xl) 0;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 640px) {
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

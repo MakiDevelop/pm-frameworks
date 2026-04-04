@@ -1,0 +1,148 @@
+/* pm.maki.tw — Global Styles */
+
+:root {
+  /* Colors */
+  --bg: #0a0a0b;
+  --bg-card: #141416;
+  --bg-card-hover: #1a1a1e;
+  --bg-modal: #111113;
+  --text: #e8e8ec;
+  --text-muted: #8b8b96;
+  --text-dim: #5a5a66;
+  --accent: #6c9cff;
+  --accent-dim: #3d6acc;
+  --border: #2a2a30;
+  --border-light: #3a3a42;
+  --tag-bg: #1e1e24;
+  --tag-text: #a0a0b0;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --maki-bg: #1a1520;
+  --maki-border: #6c5ce7;
+  --maki-accent: #a78bfa;
+
+  /* Typography */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Instrument Sans', 'Noto Sans TC', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Layout */
+  --max-width: 1200px;
+  --max-content: 800px;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--text);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Utility */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+/* Category tag colors */
+.tag {
+  display: inline-block;
+  padding: 0.2em 0.7em;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tag-使用者洞察 { background: #1a2332; color: #60a5fa; }
+.tag-問題定義 { background: #2a1a1a; color: #f87171; }
+.tag-創意發想 { background: #1a2a1a; color: #4ade80; }
+.tag-驗證測試 { background: #2a2a1a; color: #fbbf24; }
+.tag-執行落地 { background: #1a1a2a; color: #818cf8; }
+.tag-成長策略 { background: #2a1a2a; color: #e879f9; }
+.tag-系統思維 { background: #1a2a2a; color: #2dd4bf; }
+
+/* Maki's Take section */
+.maki-take {
+  background: var(--maki-bg);
+  border: 1px solid var(--maki-border);
+  border-radius: var(--radius);
+  padding: var(--space-xl);
+  margin: var(--space-xl) 0;
+}
+
+.maki-take-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--maki-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-sm);
+}
+
+/* Skill download button */
+.skill-download {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.5em 1.2em;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.skill-download:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

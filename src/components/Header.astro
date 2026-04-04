@@ -1,0 +1,60 @@
+---
+interface Props {
+  showBack?: boolean;
+  subtitle?: string;
+}
+
+const { showBack = false, subtitle } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    {showBack ? (
+      <a href="/" class="back-link">&larr; 回到框架列表</a>
+    ) : null}
+    <a href="/" class="logo">
+      <span class="logo-highlight">PM</span>Frame.works
+    </a>
+    {subtitle ? <span class="header-subtitle">{subtitle}</span> : null}
+  </div>
+</header>
+
+<style>
+  .site-header {
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .logo-highlight {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .back-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .header-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+</style>
