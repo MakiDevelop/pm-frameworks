@@ -24,6 +24,15 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="l4ErwkRsHctpgxW08FRscRGljkueGz6SO2x1nNDYtkw" />
     <meta name="description" content={description} />
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H2G2EH31B0"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-H2G2EH31B0');
+    </script>
     <title>{title}</title>
 
     <!-- Canonical -->
