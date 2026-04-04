@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FrameworkCard from '../../components/FrameworkCard.astro';
+import { getCollection } from 'astro:content';
+
+const CATEGORIES: Record<string, { name: string; description: string }> = {
+  'user-insight': {
+    name: '使用者洞察',
+    description: '深入理解使用者的行為、動機和需求。從訪談、觀察到角色建構，這些框架幫你從「我以為」轉向「我知道」。',
+  },
+  'problem-definition': {
+    name: '問題定義',
+    description: '把模糊的需求轉化為清晰的問題陳述。確保團隊對「我們要解決什麼」達成共識，避免在錯誤的問題上投入資源。',
+  },
+  'ideation': {
+    name: '創意發想',
+    description: '系統化地產生解決方案。從結構化的創意策略到快速原型，這些框架確保你的思維不局限於常規路徑。',
+  },
+  'validation': {
+    name: '驗證測試',
+    description: '用最小成本驗證假設。從 MVP 到 A/B 測試，用數據而非直覺做決策，避免大規模無效投入。',
+  },
+  'execution': {
+    name: '執行落地',
+    description: '把想法變成可交付的成果。排序需求、分配資源、管理進度，這些框架讓好點子不只停在白板上。',
+  },
+  'growth': {
+    name: '成長策略',
+    description: '從獲客到留存，從定價到推薦，系統化地驅動產品成長。找到成長瓶頸，設計增長引擎。',
+  },
+  'systems-thinking': {
+    name: '系統思維',
+    description: '跳出局部優化，看到全局。理解反饋循環、槓桿點和湧現現象，做出真正有長期影響的決策。',
+  },
+};
+
+export async function getStaticPaths() {
+  const slugs = ['user-insight','problem-definition','ideation','validation','execution','growth','systems-thinking'];
+  return slugs.map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const cat = CATEGORIES[slug!];
+const allFrameworks = await getCollection('frameworks');
+const frameworks = allFrameworks
+  .filter((f) => f.data.category === cat.name)
+  .sort((a, b) => a.data.number - b.data.number);
+
+const jsonLd = {
+  '@type': 'CollectionPage',
+  name: `${cat.name} — 產品設計框架`,
+  description: cat.description,
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+  numberOfItems: frameworks.length,
+};
+---
+
+<BaseLayout title={`${cat.name} — 產品設計框架 · PMFrame.works`} description={cat.description} jsonLd={jsonLd}>
+  <Header showBack={true} subtitle={cat.name} />
+
+  <nav class="breadcrumb" aria-label="麵包屑導覽">
+    <div class="container">
+      <a href="/">首頁</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>{cat.name}</span>
+    </div>
+  </nav>
+
+  <section class="category-hero">
+    <div class="container">
+      <h1 class="category-title">{cat.name}</h1>
+      <p class="category-desc">{cat.description}</p>
+      <p class="category-count">{frameworks.length} 個框架</p>
+    </div>
+  </section>
+
+  <section class="grid-section">
+    <div class="container">
+      <div class="card-grid">
+        {frameworks.map((f) => (
+          <FrameworkCard
+            number={f.data.number}
+            title={f.data.title}
+            titleEn={f.data.titleEn}
+            category={f.data.category}
+            oneLiner={f.data.oneLiner}
+            slug={f.id}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    padding: var(--space-md) 0;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .breadcrumb a { color: var(--text-dim); }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb-sep { margin: 0 var(--space-sm); }
+
+  .category-hero {
+    padding: var(--space-2xl) 0;
+    text-align: center;
+  }
+
+  .category-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+  }
+
+  .category-desc {
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 0 auto var(--space-md);
+    line-height: 1.8;
+  }
+
+  .category-count {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .grid-section {
+    padding: 0 0 var(--space-2xl);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 640px) {
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>

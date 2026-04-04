@@ -2,25 +2,99 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import FrameworkCard from '../../components/FrameworkCard.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const frameworks = await getCollection('frameworks');
   return frameworks.map((f) => ({
     params: { id: f.id },
-    props: { framework: f },
+    props: { framework: f, allFrameworks: frameworks },
   }));
 }
 
-const { framework } = Astro.props;
+const { framework, allFrameworks } = Astro.props;
 const { Content } = await render(framework);
 const { number, title, titleEn, category, oneLiner, author, source, stage, duration, year } = framework.data;
 const num = String(number).padStart(2, '0');
 const skillPath = `/skills/${framework.id}.md`;
+
+// Related frameworks (same category, exclude self, max 4)
+const related = allFrameworks
+  .filter((f) => f.data.category === category && f.id !== framework.id)
+  .sort((a, b) => a.data.number - b.data.number)
+  .slice(0, 4);
+
+// Category slug mapping
+const categorySlugMap: Record<string, string> = {
+  '使用者洞察': 'user-insight',
+  '問題定義': 'problem-definition',
+  '創意發想': 'ideation',
+  '驗證測試': 'validation',
+  '執行落地': 'execution',
+  '成長策略': 'growth',
+  '系統思維': 'systems-thinking',
+};
+
+// JSON-LD structured data
+const jsonLd = [
+  {
+    '@type': 'TechArticle',
+    headline: `${title} (${titleEn})`,
+    alternativeHeadline: titleEn,
+    description: oneLiner,
+    author: { '@type': 'Person', name: author },
+    publisher: { '@type': 'Organization', name: 'pm.maki.tw' },
+    datePublished: `${year}-01-01`,
+    articleSection: category,
+    inLanguage: 'zh-TW',
+    url: new URL(Astro.url.pathname, Astro.site).toString(),
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `${title}（${titleEn}）是什麼？`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: oneLiner,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `${title} 適合什麼時候使用？`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${title} 適用於 ${stage} 階段，通常需要 ${duration}。由 ${author} 提出。`,
+        },
+      },
+    ],
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首頁', item: new URL('/', Astro.site).toString() },
+      { '@type': 'ListItem', position: 2, name: category, item: new URL(`/category/${categorySlugMap[category]}/`, Astro.site).toString() },
+      { '@type': 'ListItem', position: 3, name: title },
+    ],
+  },
+];
 ---
 
-<BaseLayout title={`${title} · PMFrame.works`} description={oneLiner}>
+<BaseLayout title={`${title}（${titleEn}）· PMFrame.works`} description={oneLiner} jsonLd={jsonLd}>
   <Header showBack={true} subtitle={`${category} · #${num}`} />
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="麵包屑導覽">
+    <div class="container">
+      <a href="/">首頁</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href={`/category/${categorySlugMap[category]}/`}>{category}</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>{title}</span>
+    </div>
+  </nav>
 
   <article class="framework-detail">
     <div class="container">
@@ -31,23 +105,26 @@ const skillPath = `/skills/${framework.id}.md`;
         </h1>
         <p class="detail-oneliner">{oneLiner}</p>
 
+        <!-- Metadata as dl for AIO -->
         <div class="detail-meta">
-          <div class="meta-item">
-            <span class="meta-label">提出者</span>
-            <span class="meta-value">{author}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">來源</span>
-            <span class="meta-value">{source}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">適合階段</span>
-            <span class="meta-value">{stage}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">使用時長</span>
-            <span class="meta-value">{duration}</span>
-          </div>
+          <dl class="meta-grid">
+            <div class="meta-item">
+              <dt class="meta-label">提出者</dt>
+              <dd class="meta-value">{author}</dd>
+            </div>
+            <div class="meta-item">
+              <dt class="meta-label">來源</dt>
+              <dd class="meta-value">{source}</dd>
+            </div>
+            <div class="meta-item">
+              <dt class="meta-label">適合階段</dt>
+              <dd class="meta-value">{stage}</dd>
+            </div>
+            <div class="meta-item">
+              <dt class="meta-label">使用時長</dt>
+              <dd class="meta-value">{duration}</dd>
+            </div>
+          </dl>
           <a href={skillPath} class="skill-download" download>
             &#x2B07; 下載 Skill
           </a>
@@ -57,6 +134,25 @@ const skillPath = `/skills/${framework.id}.md`;
       <section class="detail-content">
         <Content />
       </section>
+
+      <!-- Related Frameworks -->
+      {related.length > 0 && (
+        <section class="related-section">
+          <h2 class="related-title">同類框架推薦</h2>
+          <div class="related-grid">
+            {related.map((f) => (
+              <FrameworkCard
+                number={f.data.number}
+                title={f.data.title}
+                titleEn={f.data.titleEn}
+                category={f.data.category}
+                oneLiner={f.data.oneLiner}
+                slug={f.id}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   </article>
 
@@ -64,6 +160,24 @@ const skillPath = `/skills/${framework.id}.md`;
 </BaseLayout>
 
 <style>
+  .breadcrumb {
+    padding: var(--space-md) 0;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .breadcrumb a {
+    color: var(--text-dim);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+
+  .breadcrumb-sep {
+    margin: 0 var(--space-sm);
+  }
+
   .framework-detail {
     padding: var(--space-2xl) 0;
   }
@@ -111,11 +225,19 @@ const skillPath = `/skills/${framework.id}.md`;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: var(--space-lg);
     padding: var(--space-lg);
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+  }
+
+  .meta-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-lg);
   }
 
   .meta-item {
@@ -136,7 +258,6 @@ const skillPath = `/skills/${framework.id}.md`;
     color: var(--text);
   }
 
-  /* Markdown content styling */
   .detail-content {
     max-width: var(--max-content);
     margin: 0 auto;
@@ -188,7 +309,6 @@ const skillPath = `/skills/${framework.id}.md`;
     font-style: italic;
   }
 
-  /* Maki's Take — rendered from markdown via custom div */
   .detail-content :global(.maki-take) {
     background: var(--maki-bg);
     border: 1px solid var(--maki-border);
@@ -206,7 +326,6 @@ const skillPath = `/skills/${framework.id}.md`;
     margin-bottom: var(--space-sm);
   }
 
-  /* Do / Don't boxes */
   .detail-content :global(.do-box) {
     background: #0d1f0d;
     border: 1px solid #1a3a1a;
@@ -223,10 +342,27 @@ const skillPath = `/skills/${framework.id}.md`;
     margin: var(--space-md) 0;
   }
 
+  .related-section {
+    max-width: var(--max-content);
+    margin: var(--space-3xl) auto 0;
+  }
+
+  .related-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: var(--space-lg);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-md);
+  }
+
   @media (max-width: 640px) {
-    .detail-meta {
+    .meta-grid {
       flex-direction: column;
-      align-items: center;
     }
   }
 </style>
