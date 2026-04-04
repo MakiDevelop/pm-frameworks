@@ -51,7 +51,7 @@ const countByCategory = categories.map((cat) => ({
           autocomplete="off"
         />
       </div>
-      <div class="category-tabs" role="tablist">
+      <div class="category-tabs">
         <button class="tab active" data-category="all">
           全部 ({frameworks.length})
         </button>
@@ -71,7 +71,7 @@ const countByCategory = categories.map((cat) => ({
     <div class="container">
       <div class="card-grid" id="card-grid">
         {frameworks.map((f) => (
-          <div class="card-wrapper" data-category={f.data.category} data-title={f.data.title} data-title-en={f.data.titleEn}>
+          <div class="card-wrapper" data-category={f.data.category} data-title={f.data.title} data-title-en={f.data.titleEn} data-oneliner={f.data.oneLiner}>
             <FrameworkCard
               number={f.data.number}
               title={f.data.title}
@@ -106,9 +106,10 @@ const countByCategory = categories.map((cat) => ({
       const cat = el.dataset.category || '';
       const title = (el.dataset.title || '').toLowerCase();
       const titleEn = (el.dataset.titleEn || '').toLowerCase();
+      const oneliner = (el.dataset.oneliner || '').toLowerCase();
 
       const matchCategory = activeCategory === 'all' || cat === activeCategory;
-      const matchSearch = !query || title.includes(query) || titleEn.includes(query);
+      const matchSearch = !query || title.includes(query) || titleEn.includes(query) || oneliner.includes(query);
 
       if (matchCategory && matchSearch) {
         el.style.display = '';
