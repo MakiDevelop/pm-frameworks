@@ -22,6 +22,10 @@ const frameworks = defineCollection({
     stage: z.string(),
     duration: z.string(),
     year: z.number(),
+    similarTo: z.array(z.object({
+      slug: z.string(),
+      difference: z.string(),
+    })).optional(),
   }),
 });
 

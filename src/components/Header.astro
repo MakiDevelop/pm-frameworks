@@ -16,6 +16,9 @@ const { showBack = false, subtitle } = Astro.props;
       <span class="logo-highlight">PM</span>Frame.works
     </a>
     {subtitle ? <span class="header-subtitle">{subtitle}</span> : null}
+    <nav class="header-nav">
+      <a href="/roadmap/" class="nav-link">路線圖</a>
+    </nav>
   </div>
 </header>
 
@@ -56,5 +59,23 @@ const { showBack = false, subtitle } = Astro.props;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--text-dim);
+  }
+
+  .header-nav {
+    margin-left: auto;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding: 0.3em 0.8em;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 </style>
