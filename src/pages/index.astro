@@ -30,6 +30,14 @@ const countByCategory = categories.map((cat) => ({
 
   <section class="hero">
     <div class="container">
+      <img
+        class="hero-kv"
+        src="/hero-pm.webp"
+        alt="PMFrame.works — 把對的框架，用在對的時機"
+        width="1280"
+        height="853"
+        fetchpriority="high"
+      />
       <p class="hero-eyebrow">繁體中文版 · 精選收錄</p>
       <h1 class="hero-title">
         產品設計<em>框架</em>
@@ -138,6 +146,15 @@ const countByCategory = categories.map((cat) => ({
   .hero {
     padding: var(--space-3xl) 0 var(--space-2xl);
     text-align: center;
+  }
+
+  .hero-kv {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    margin: 0 auto var(--space-xl);
+    border-radius: 16px;
   }
 
   .hero-eyebrow {
