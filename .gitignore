@@ -2,3 +2,7 @@ node_modules/
 dist/
 .astro/
 *.png
+
+# KV 圖源檔（最終版會搬到 public/ 為 hero-*.webp）
+/KV.*
+/*-KV.*
